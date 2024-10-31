@@ -1,13 +1,19 @@
-import express from 'express';
-import cors from 'cors';
 import bodyParser from 'body-parser';
+import cors from 'cors';
+import express from 'express';
 import pkg from 'pg';
+import { fetchAndSaveCsv } from './fetchCsvData.js';
 const { Pool } = pkg;
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+const apiUrl = 'https://data.cityofnewyork.us/resource/8wbx-tsch.json';
+const outputFilePath = './fhv_data.csv';
+const limit = 1000; // Adjust limit per request as needed
+
+fetchAndSaveCsv(apiUrl, outputFilePath, limit);
 // Set up PostgreSQL connection pool
 const pool = new Pool({
   user: 'postgres',
