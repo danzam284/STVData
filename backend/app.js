@@ -9,8 +9,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const apiUrl = 'https://data.cityofnewyork.us/resource/8wbx-tsch.json';
-const outputFilePath = './fhv_data.csv';
+const apiUrl = 'URL'; // Replace with your API URL
+const outputFilePath = 'filename.csv'; // Replace with desired output file path
 const limit = 1000; // Adjust limit per request as needed
 
 fetchAndSaveCsv(apiUrl, outputFilePath, limit);
