@@ -1,14 +1,20 @@
-import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import pkg from "pg";
 import axios from "axios";
+import express from 'express';
+import pkg from 'pg';
+import { fetchAndSaveCsv } from './fetchCsvData.js';
 const { Pool } = pkg;
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+const apiUrl = 'URL'; // Replace with your API URL
+const outputFilePath = 'filename.csv'; // Replace with desired output file path
+const limit = 1000; // Adjust limit per request as needed
+
+fetchAndSaveCsv(apiUrl, outputFilePath, limit);
 // Set up PostgreSQL connection pool
 const pool = new Pool({
   user: "postgres",
