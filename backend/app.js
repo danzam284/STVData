@@ -4,7 +4,6 @@ import express from 'express';
 import pkg from 'pg';
 import { fetchAndSaveCsv } from './fetchCsvData.js';
 const { Pool } = pkg;
-
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -34,6 +33,24 @@ app.get('/data', async (req, res) => {
   }
 });
 
+<<<<<<< Updated upstream
+=======
+app.post("/websiteURL", async (req, res) => {
+  try {
+    if (!req.body.inputWebsite) {
+      throw `input is empty`;
+    }
+    let response = await axios.get(req.body.inputWebsite);
+    if (!response) {
+      throw `This website does not exist`;
+    }
+    await fetchAndSaveCsv(req.body.inputWebsite, req.body.csvFileName || "data.csv");
+    return res.status(200).send("Request Successful");
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+>>>>>>> Stashed changes
 
 app.listen(3000, () => {
   console.log("Server running on port 3000");

@@ -3,6 +3,7 @@ import { parse } from 'json2csv';
 import fs from 'fs';
 
 export async function fetchAndSaveCsv(apiUrl, outputFilePath, limit = 1000) {
+<<<<<<< Updated upstream
     let allData = [];
     let offset = 0;
 
@@ -20,8 +21,13 @@ export async function fetchAndSaveCsv(apiUrl, outputFilePath, limit = 1000) {
 
         // Convert the aggregated JSON data to CSV
         const csvData = parse(allData);
+=======
+    try {
+        const response = await axios.get(apiUrl);
+        const data = response.data;
+        const csvData = parse(data);
+>>>>>>> Stashed changes
         fs.writeFileSync(outputFilePath, csvData);
-
         console.log(`Data saved to ${outputFilePath}`);
     } catch (error) {
         console.error("Error fetching or saving data:", error);
