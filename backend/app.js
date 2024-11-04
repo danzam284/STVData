@@ -10,11 +10,6 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const apiUrl = 'URL'; // Replace with your API URL
-const outputFilePath = 'filename.csv'; // Replace with desired output file path
-const limit = 1000; // Adjust limit per request as needed
-
-fetchAndSaveCsv(apiUrl, outputFilePath, limit);
 // Set up PostgreSQL connection pool
 const pool = new Pool({
   user: "postgres",
@@ -37,13 +32,15 @@ app.get("/data", async (req, res) => {
 
 app.post("/websiteURL", async (req, res) => {
   try {
-    if (!req.body) {
+    if (!req.body.inputWebsite) {
       throw `input is empty`;
     }
     let response = await axios.get(req.body.inputWebsite);
     if (!response) {
       throw `This website does not exist`;
     }
+    await fetchAndSaveCsv(req.body.inputWebsite, "data.csv");
+
     return res.status(200).send("Request Successful");
   } catch (e) {
     res.status(400).send(e);

@@ -1,5 +1,7 @@
 import '../app.css';
 import { useEffect, useState } from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import axios from 'axios';
 
 function ConceptPage() {
@@ -13,6 +15,7 @@ function ConceptPage() {
             });
             setResponse(result.data);
         } catch (error) {
+            console.log(error);
             setResponse(error.message);
         }
     };
@@ -20,8 +23,8 @@ function ConceptPage() {
     <h1>Concept Page</h1>
     <div>
         <form onSubmit={handleSubmit}>
-                <textarea class="input" name="inputWebsite" id="input" placeholder={"insert url here"} onChange={(e) => setInputWebsite(e.target.value)}></textarea>
-                <input type="submit"></input>
+            <TextField id="input" label="Insert URL here" variant="outlined" onChange={(e) => setInputWebsite(e.target.value)} /><br></br><br></br>
+            <Button variant='contained' type='submit' color='primary'>Submit</Button>
         </form>
     </div>
     {response && (

@@ -33,7 +33,7 @@
   }
 }
 form {
-  display: grid;
+  /* display: grid;
 	grid-area: search;
 	grid-template:
 		"search" 60px
@@ -41,7 +41,8 @@ form {
 	justify-content: center;
 	align-content: center;
 	justify-items: stretch;
-	align-items: stretch;
+	align-items: stretch; */
+  padding: 30px;
 	background: hsl(0, 0%, 99%);
 }
 .input {
