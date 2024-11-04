@@ -32,6 +32,30 @@
     animation: logo-spin infinite 20s linear;
   }
 }
+form {
+  display: grid;
+	grid-area: search;
+	grid-template:
+		"search" 60px
+		/ 420px;
+	justify-content: center;
+	align-content: center;
+	justify-items: stretch;
+	align-items: stretch;
+	background: hsl(0, 0%, 99%);
+}
+.input {
+ display: grid;
+	grid-area: search;
+	grid-template:
+		"search" 60px
+		/ 420px;
+	justify-content: center;
+	align-content: center;
+	justify-items: stretch;
+	align-items: stretch;
+	background: hsl(0, 0%, 99%);
+}
 
 .card {
   padding: 2em;

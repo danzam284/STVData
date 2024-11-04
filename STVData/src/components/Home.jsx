@@ -6,6 +6,7 @@ function Home() {
         <div style={{display: "flex", justifyContent: "center", gap: "20px"}}>
             <Link to="/postgres">Postgres</Link>
             <Link to="/org">Org</Link>
+            <Link to="/conceptPage">Concept Page</Link>
         </div>
     </div>
 }
