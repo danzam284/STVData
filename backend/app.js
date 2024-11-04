@@ -32,9 +32,7 @@ app.get('/data', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
-
-<<<<<<< Updated upstream
-=======
+// Fetch url from frontend and save the csv
 app.post("/websiteURL", async (req, res) => {
   try {
     if (!req.body.inputWebsite) {
@@ -50,7 +48,6 @@ app.post("/websiteURL", async (req, res) => {
     res.status(400).send(e);
   }
 });
->>>>>>> Stashed changes
 
 app.listen(3000, () => {
   console.log("Server running on port 3000");
