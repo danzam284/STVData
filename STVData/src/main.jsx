@@ -4,6 +4,7 @@ import Postgres from './components/Postgres.jsx';
 import Home from './components/Home.jsx';
 import Org from './components/Org.jsx';
 import ConceptPage from './components/conceptPage.jsx';
+import APIorURL from './components/APIorURL.jsx';
 import './index.css'
 
 const router = createBrowserRouter([
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/conceptPage",
     element: <ConceptPage />,
+  },
+  {
+    path: "/apiorurl",
+    element: <APIorURL />,
   }
 ]);
 

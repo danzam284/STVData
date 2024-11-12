@@ -4,11 +4,18 @@ import axios from "axios";
 import express from 'express';
 import pkg from 'pg';
 import { fetchAndSaveCsv } from './fetchCsvData.js';
+import { sendPrompt } from "./prompt.js";
+import { Server } from "socket.io";
+import { createServer } from "http";
 const { Pool } = pkg;
 
 const app = express();
+
 app.use(cors());
 app.use(bodyParser.json());
+
+const httpServer = createServer(app);
+const io = new Server(httpServer, { cors: { origin: "*" } });
 
 // Set up PostgreSQL connection pool
 const pool = new Pool({
@@ -47,6 +54,44 @@ app.post("/websiteURL", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
+const responseConvertor = {
+  "public": " is a public API",
+  "private": " is a private API",
+  "": " is a website"
+};
+
+io.on('connection', (socket) => {
+
+  socket.on('fileUpload', async (fileData) => {
+    const buffer = Buffer.from(fileData);
+    const fileContent = buffer.toString('utf-8');
+
+    const lines = fileContent.split('\n');
+    const number = lines.length;
+
+    for (let i = 0; i < number; i++) {
+      try {
+        const ruling = await sendPrompt(lines[i]);
+
+        let converted = lines[i];
+        if (ruling.toLowerCase().includes("public")) {
+          converted = `${converted} is a public API`;
+        } else if (ruling.toLowerCase().includes("private")) {
+          converted = `${converted} is a private API`;
+        } else {
+          converted = `${converted} is a website`;
+        }
+
+        socket.emit("update", i, number, converted);
+      } catch(e) {
+        console.log(e);
+        i--;
+      }
+    }
+  });
+
+});
+
+httpServer.listen(3000, () => {
   console.log("Server running on port 3000");
 });

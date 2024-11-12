@@ -7,6 +7,7 @@ function Home() {
             <Link to="/postgres">Postgres</Link>
             <Link to="/org">Org</Link>
             <Link to="/conceptPage">Concept Page</Link>
+            <Link to="/apiorurl">API vs URL</Link>
         </div>
     </div>
 }
