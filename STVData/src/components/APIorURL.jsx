@@ -56,7 +56,7 @@ function APIorURL() {
 
             {data.length > 0 &&
                 data.map((entry) => (
-                    <p>{entry}</p>
+                    <p key={entry}>{entry}</p>
                 ))
             }
         </div>

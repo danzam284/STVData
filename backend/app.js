@@ -54,11 +54,35 @@ app.post("/websiteURL", async (req, res) => {
   }
 });
 
-const responseConvertor = {
-  "public": " is a public API",
-  "private": " is a private API",
-  "": " is a website"
-};
+async function APIOrURL(link) {
+  try {
+    const response = await axios.get(link, { validateStatus: () => true });
+
+    if (response.status === 200) {
+      const contentType = response.headers['content-type'];
+
+      if (contentType.includes('application/json')) {
+        if (!response.data.error && !response.data.message) {
+          return "Public API";
+        }
+        return "Private API";
+      } else if (contentType.includes('text/html')) {
+        return "URL";
+      }
+    } else if (response.status === 401 || response.status === 403 || response.status === 215 || response.status === 400) {
+      return "Private API";
+    } else if (response.status === 404) {
+      return "Does not exist";
+    }
+    return "Unknown";
+  } catch(e) {
+    if (error.response && error.response.status === 404) {
+      return "Does not exist";
+    } else {
+      return e;
+    }
+  }
+}
 
 io.on('connection', (socket) => {
 
