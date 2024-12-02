@@ -86,7 +86,7 @@ async function APIOrURL(link) {
 
 io.on('connection', (socket) => {
 
-  socket.on('fileUpload', async (fileData) => {
+  socket.on('fileUpload', async (fileData, useAI) => {
     const buffer = Buffer.from(fileData);
     const fileContent = buffer.toString('utf-8');
 
@@ -95,18 +95,25 @@ io.on('connection', (socket) => {
 
     for (let i = 0; i < number; i++) {
       try {
-        const ruling = await sendPrompt(lines[i]);
+        if (useAI) {
+          const ruling = await sendPrompt(lines[i]);
 
-        let converted = lines[i];
-        if (ruling.toLowerCase().includes("public")) {
-          converted = `${converted} is a public API`;
-        } else if (ruling.toLowerCase().includes("private")) {
-          converted = `${converted} is a private API`;
+          let converted = lines[i];
+          if (ruling.toLowerCase().includes("public")) {
+            converted = `${converted} is a public API`;
+          } else if (ruling.toLowerCase().includes("private")) {
+            converted = `${converted} is a private API`;
+          } else {
+            converted = `${converted} is a website`;
+          }
+
+          socket.emit("update", i, number, converted);
         } else {
-          converted = `${converted} is a website`;
-        }
 
-        socket.emit("update", i, number, converted);
+          const ruling = await APIOrURL(lines[i]);
+          const converted = `${lines[i]} is a ${ruling}`;
+          socket.emit("update", i, number, converted);
+        }
       } catch(e) {
         console.log(e);
         i--;

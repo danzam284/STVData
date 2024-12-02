@@ -26,6 +26,7 @@ function APIorURL() {
     };
 
     const handleSubmit = (e) => {
+        setData([]);
         e.preventDefault();
     
         if (!file) {
@@ -36,8 +37,9 @@ function APIorURL() {
         const reader = new FileReader();
         reader.onload = () => {
           const fileData = reader.result;
+          const useAI = document.getElementById("useAI").checked;
     
-          socket.emit('fileUpload', fileData);
+          socket.emit('fileUpload', fileData, useAI);
         };
     
         reader.readAsArrayBuffer(file);
@@ -45,8 +47,9 @@ function APIorURL() {
 
     return (
         <div>
-            <form onSubmit={handleSubmit} style={{background: "none"}}>
-                <input type="file" accept='text/plain' onChange={handleFileChange} />
+            <form onSubmit={handleSubmit} style={{background: "none", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
+                <input type="file" accept='text/plain' onChange={handleFileChange} /><br></br>
+                <div><span>Use AI?</span><input type='checkbox' id='useAI'></input></div><br></br>
                 <button type="submit">Upload File</button>
             </form>
 
