@@ -63,21 +63,21 @@ async function APIOrURL(link) {
 
       if (contentType.includes('application/json')) {
         if (!response.data.error && !response.data.message) {
-          return "Public API";
+          return ["Public API", response.data];
         }
-        return "Private API";
+        return ["Private API", null];
       } else if (contentType.includes('text/html')) {
-        return "URL";
+        return ["URL", null];
       }
     } else if (response.status === 401 || response.status === 403 || response.status === 215 || response.status === 400) {
-      return "Private API";
+      return ["Private API", null];
     } else if (response.status === 404) {
-      return "Does not exist";
+      return ["Does not exist", null];
     }
-    return "Unknown";
+    return ["Unknown", null];
   } catch(e) {
-    if (error.response && error.response.status === 404) {
-      return "Does not exist";
+    if (e.response && e.response.status === 404) {
+      return ["Does not exist", null];
     } else {
       return e;
     }
@@ -107,12 +107,13 @@ io.on('connection', (socket) => {
             converted = `${converted} is a website`;
           }
 
-          socket.emit("update", i, number, converted);
+          socket.emit("update", i, number, converted, ruling.toLowerCase(), null);
         } else {
 
           const ruling = await APIOrURL(lines[i]);
-          const converted = `${lines[i]} is a ${ruling}`;
-          socket.emit("update", i, number, converted);
+          const converted = `${lines[i]} is a ${ruling[0]}`;
+          const refinedData = getMostLikelyData(ruling[1]);
+          socket.emit("update", i, number, converted, ruling[0], refinedData);
         }
       } catch(e) {
         console.log(e);
@@ -122,6 +123,45 @@ io.on('connection', (socket) => {
   });
 
 });
+
+/**
+ * Standardizes data retrieval from API by picking most likely attribute (or subattribute where the actual data lies)
+ */
+function getMostLikelyData(data) {
+  if (!data) return null;
+
+  if (Array.isArray(data)) return data;
+
+  if (typeof data === 'object' && data !== null) {
+
+    const possibleKeys = ['data', 'results', 'items', 'payload'];
+    for (const key of possibleKeys) {
+      if (data[key]) {
+        return getMostLikelyData(data[key]);
+      }
+    }
+
+    let largestValue = null;
+    let maxItems = 0;
+
+    for (const key in data) {
+      if (Array.isArray(data[key]) && data[key].length > maxItems) {
+        largestValue = data[key];
+        maxItems = data[key].length;
+      } else if (typeof data[key] === 'object' && data[key] !== null) {
+        const nestedKeys = Object.keys(data[key]).length;
+        if (nestedKeys > maxItems) {
+          largestValue = data[key];
+          maxItems = nestedKeys;
+        }
+      }
+    }
+
+    if (largestValue) return getMostLikelyData(largestValue);
+  }
+
+  return data;
+}
 
 httpServer.listen(3000, () => {
   console.log("Server running on port 3000");
