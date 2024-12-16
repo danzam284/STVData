@@ -76,8 +76,14 @@ function APIorURL() {
                 open={modalOpen} 
                 onOk={() => setModalOpen(false)} 
                 onCancel={() => setModalOpen(false)}
+                width={1000}
+                bodyStyle={{
+                    maxHeight: "400px", // Set a fixed height for the modal's content area
+                    overflowY: "auto",  // Add vertical scrollbar when content overflows
+                    overflowX: "hidden" // Optional: prevent horizontal scrolling in the modal body
+                }}
                 footer={[
-                    <button key="download" type="primary" onClick={() => downloadToCSV(currentDataset)}>
+                    <button key="download" type="primary" onClick={() => downloadToCSV(currentDataset)} style={{backgroundColor: "green", marginRight: "10px"}}>
                         Download CSV
                     </button>,
                     <button key="close" onClick={() => setModalOpen(false)}>
@@ -85,10 +91,12 @@ function APIorURL() {
                     </button>
                 ]}
             >
-                {currentDataset ?
-                    <Dataset data={currentDataset} /> :
-                    <p>Loading data...</p>
-                }
+                <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", overflowX: "auto", width: "100%"}}>
+                    {currentDataset ?
+                        <Dataset data={currentDataset} /> :
+                        <p>Loading data...</p>
+                    }
+                </div>
             </Modal>
 
             <form onSubmit={handleSubmit} style={{background: "none", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
